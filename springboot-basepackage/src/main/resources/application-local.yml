@@ -1,0 +1,25 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types:
+      - application-json
+      - application/xml
+      - application/javascript
+      - text/html
+      - text/xml
+      - text/plain
+      - text/css
+    min-response-size: 2048
+
+spring:
+  datasource:
+    ufc:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/dj_second_phase?serverTimezone=UTC&characterEncoding=utf-8
+      username: root
+      password: 123456
+
+
+
+
