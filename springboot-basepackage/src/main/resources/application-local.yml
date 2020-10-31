@@ -32,6 +32,9 @@ spring:
 
     default-tableNum:
       2
+    filters:
+      stat,wall,log4j
+
 
 
 

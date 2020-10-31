@@ -167,10 +167,11 @@
             <version>4.0.0</version>
         </dependency>
 
+        <!--   sharing 3.1.0 有分页bug，官方说升级版本解决-->
         <dependency>
-            <groupId>io.shardingsphere</groupId>
-            <artifactId>sharding-jdbc-spring-namespace</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-jdbc-core</artifactId>
+            <version>4.0.0-RC1</version>
         </dependency>
 
 
