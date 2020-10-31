@@ -2,8 +2,8 @@ package com.springbootbasepackage.algorithm;
 
 
 import com.google.common.collect.Range;
-import io.shardingsphere.api.algorithm.sharding.RangeShardingValue;
-import io.shardingsphere.api.algorithm.sharding.standard.RangeShardingAlgorithm;
+import org.apache.shardingsphere.api.sharding.standard.RangeShardingAlgorithm;
+import org.apache.shardingsphere.api.sharding.standard.RangeShardingValue;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
 package com.springbootbasepackage.algorithm;
 
 
-import io.shardingsphere.api.algorithm.sharding.PreciseShardingValue;
-import io.shardingsphere.api.algorithm.sharding.standard.PreciseShardingAlgorithm;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.api.sharding.standard.PreciseShardingAlgorithm;
+import org.apache.shardingsphere.api.sharding.standard.PreciseShardingValue;
 
 import java.text.DecimalFormat;
 import java.util.Collection;
