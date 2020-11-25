@@ -21,12 +21,12 @@ spring:
       password: 123456
     ds0:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/sharding_0?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
+      url: jdbc:mysql://localhost:3306/sharding_0?serverTimezone=UTC&characterEncoding=utf-8
       username: root
       password: 123456
     ds1:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/sharding_1?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
+      url: jdbc:mysql://localhost:3306/sharding_1?serverTimezone=UTC&characterEncoding=utf-8
       username: root
       password: 123456
 
