@@ -62,11 +62,6 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.73</version>
         </dependency>
-        <!-- 添加jedis客户端 -->
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-        </dependency>
         <!--spring2.0集成redis所需common-pool2-->
         <!-- 必须加上，jedis依赖此  -->
         <!-- spring boot 2.0 的操作手册有标注 大家可以去看看 地址是：https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/reference/htmlsingle/-->
@@ -189,12 +184,14 @@
         </dependency>
 
 
-
+        <!-- redisson 用于lock枷锁处理 -->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
             <version>3.13.5</version>
         </dependency>
+
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
