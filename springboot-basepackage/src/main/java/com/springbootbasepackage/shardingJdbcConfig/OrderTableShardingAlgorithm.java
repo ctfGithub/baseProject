@@ -41,8 +41,8 @@ public class OrderTableShardingAlgorithm implements PreciseShardingAlgorithm<Lon
 //        }
 
         // 分库分表
-        if ("t_order".equalsIgnoreCase(shardingValue.getLogicTableName()) ||
-                "t_order_item".equalsIgnoreCase(shardingValue.getLogicTableName())) {
+        if ("goods_0".equalsIgnoreCase(shardingValue.getLogicTableName()) ||
+                "goods_1".equalsIgnoreCase(shardingValue.getLogicTableName())) {
             for (String each : tableNames) {
                 if (each.endsWith(shardingValue.getValue() % tableNames.size() + "")) {
                     tableName = each;
