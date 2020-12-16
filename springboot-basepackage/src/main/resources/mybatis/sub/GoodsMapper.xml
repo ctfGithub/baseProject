@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springbootbasepackage.dao.PartnerSourceDAO">
+    <resultMap id="BaseResultMap" type="com.springbootbasepackage.entity.PartnerSourceDO">
+        <result column="CREATOR" property="creator" />
+        <result column="OPERATOR" property="operator" />
+        <result column="PARTNER_SCORE" property="partnerScore" />
+        <result column="FREEZE_FLAG" property="freezeFlag" />
+        <result column="PARTNER_ID" property="partnerId" />
+        <result column="PARTNER_NAME" property="partnerName" />
+        <result column="AGREEMENT_FLAG" property="agreementFlag" />
+        <result column="FACTORING_AGREEMENT_FLAG" property="factoringAgreementFlag" />
+        <result column="FACTORING_AGREEMENT_URL" property="factoringAgreementUrl" />
+        <result column="AGREEMENT_URL" property="agreementUrl" />
+    </resultMap>
+
+    <!-- 单个插入 -->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.springbootbasepackage.entity.PartnerSourceDO">
+        insert into dj_partner_source (
+            GMT_CREATE, GMT_MODIFIED, ROW_VERSION, ROW_STATUS, EXT_ATT, CREATOR, OPERATOR, PARTNER_SCORE, FREEZE_FLAG, PARTNER_ID, PARTNER_NAME, AGREEMENT_FLAG,FACTORING_AGREEMENT_FLAG,FACTORING_AGREEMENT_URL,AGREEMENT_URL
+        ) value (
+            now(), now(), 0, 0, #{extAtt}, #{creator}, #{operator}, #{partnerScore}, #{freezeFlag}, #{partnerId}, #{partnerName}, #{agreementFlag}, #{factoringAgreementFlag}, #{factoringAgreementUrl}, #{agreementUrl}
+        )
+    </insert>
+
+    <!-- 单个更新 -->
+    <update id="update" parameterType="com.springbootbasepackage.entity.PartnerSourceDO">
+        update dj_partner_source
+        <set>
+            GMT_MODIFIED = now(),
+            ROW_VERSION = ROW_VERSION + 1,
+            <if test="extAtt != null">
+                EXT_ATT = #{extAtt},
+            </if>
+            <if test="creator != null">
+                CREATOR = #{creator},
+            </if>
+            <if test="factoringAgreementFlag != null">
+                FACTORING_AGREEMENT_FLAG = #{factoringAgreementFlag},
+            </if>
+            <if test="factoringAgreementUrl != null">
+                FACTORING_AGREEMENT_URL = #{factoringAgreementUrl},
+            </if>
+            <if test="operator != null">
+                OPERATOR = #{operator},
+            </if>
+            <if test="partnerScore != null">
+                PARTNER_SCORE = #{partnerScore},
+            </if>
+            <if test="freezeFlag != null">
+                FREEZE_FLAG = #{freezeFlag},
+            </if>
+            <if test="partnerId != null">
+                PARTNER_ID = #{partnerId},
+            </if>
+            <if test="partnerName != null">
+                PARTNER_NAME = #{partnerName},
+            </if>
+            <if test="agreementFlag != null">
+                AGREEMENT_FLAG = #{agreementFlag},
+            </if>
+            <if test="agreementUrl != null">
+                AGREEMENT_URL = #{agreementUrl},
+            </if>
+        </set>
+        where PARTNER_ID = #{partnerId}
+        and ROW_STATUS = 0
+        and ROW_VERSION = #{rowVersion}
+    </update>
+
+    <!-- 删除 -->
+    <update id="delete" parameterType="java.lang.Long" >
+        update dj_partner_source set ROW_STATUS = -1  where ID = #{id}
+    </update>
+
+    <!-- 查询列表 -->
+    <select id="query" resultMap="BaseResultMap" parameterType="com.springbootbasepackage.query.PartnerSourceQuery">
+        select * from dj_partner_source where row_status = 0
+        <if test="extAtt != null">
+            and EXT_ATT = #{extAtt}
+        </if>
+        <if test="creator != null">
+            and CREATOR = #{creator}
+        </if>
+        <if test="operator != null">
+            and OPERATOR = #{operator}
+        </if>
+        <if test="partnerScore != null">
+            and PARTNER_SCORE = #{partnerScore}
+        </if>
+        <if test="freezeFlag != null">
+            and FREEZE_FLAG = #{freezeFlag}
+        </if>
+        <if test="partnerId != null">
+            and PARTNER_ID = #{partnerId}
+        </if>
+        <if test="partnerName != null">
+            and PARTNER_NAME = #{partnerName}
+        </if>
+        <if test="agreementFlag != null">
+            and AGREEMENT_FLAG = #{agreementFlag}
+        </if>
+        <if test="column != null and sort != null">
+            order by ${column} ${sort}
+        </if>
+        <if test="pageSize != null and offset != null">
+			limit #{offset}, #{pageSize}
+		</if>
+    </select>
+
+    <!-- 查询列表条数 -->
+    <select id="queryCount" resultType="java.lang.Integer" parameterType="com.springbootbasepackage.query.PartnerSourceQuery">
+        select count(1) from dj_partner_source where row_status = 0
+        <if test="extAtt != null">
+            and EXT_ATT = #{extAtt}
+        </if>
+        <if test="creator != null">
+            and CREATOR = #{creator}
+        </if>
+        <if test="operator != null">
+            and OPERATOR = #{operator}
+        </if>
+        <if test="partnerScore != null">
+            and PARTNER_SCORE = #{partnerScore}
+        </if>
+        <if test="freezeFlag != null">
+            and FREEZE_FLAG = #{freezeFlag}
+        </if>
+        <if test="partnerId != null">
+            and PARTNER_ID = #{partnerId}
+        </if>
+        <if test="partnerName != null">
+            and PARTNER_NAME = #{partnerName}
+        </if>
+        <if test="agreementFlag != null">
+            and AGREEMENT_FLAG = #{agreementFlag}
+        </if>
+    </select>
+
+    <!-- 单个查询 -->
+    <select id="queryById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from dj_partner_source where row_status = 0 and id = #{id}
+    </select>
+
+    <select id="getByPartnerId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from dj_partner_source where row_status = 0 and partner_Id = #{partnerId} limit 1
+    </select>
+
+
+    <select id="testPartnerSource"  resultMap="BaseResultMap">
+        select * from dj_partner_source where row_status = 0
+    </select>
+
+</mapper>

@@ -41,7 +41,7 @@ public class RedisClass {
         jedis.set("leiTest", "测试使用");
 
         //设置key 10 s
-        String result = jedis.set("leiTestTime", "设置这个key为10s", new SetParams().ex(60));
+        String result = jedis.set("leiTestTime", "设置这个key为10s", new SetParams().ex(10));
         System.out.println("result: " + result);
 
         //枷锁的第一种方法，Redisson枷锁

@@ -3,16 +3,24 @@ package com.springbootbasepackage.shardingJdbcConfig;
 import com.alibaba.druid.pool.DruidDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.shardingsphere.api.config.sharding.KeyGeneratorConfiguration;
 import org.apache.shardingsphere.api.config.sharding.ShardingRuleConfiguration;
 import org.apache.shardingsphere.api.config.sharding.TableRuleConfiguration;
 import org.apache.shardingsphere.api.config.sharding.strategy.StandardShardingStrategyConfiguration;
 import org.apache.shardingsphere.shardingjdbc.api.ShardingDataSourceFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.mapper.MapperScannerConfigurer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 
 import javax.sql.DataSource;
@@ -159,5 +167,44 @@ public class DataSourceConfig implements EnvironmentAware {
         KeyGeneratorConfiguration result = new KeyGeneratorConfiguration("SNOWFLAKE", kdSubKey);
         return result;
     }
+
+
+    /**
+     * 需要手动配置事务管理器
+     *
+     * @param dataSource
+     * @return
+     */
+    @Bean("sdTransactionManager")
+    public DataSourceTransactionManager transactionManager(@Qualifier("shardingDataSource") DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean(name = "subSqlSessionFactory")
+    @Primary
+    public SqlSessionFactory subSqlSessionFactory(@Qualifier("shardingDataSource") DataSource dataSource) throws Exception {
+        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+        bean.setDataSource(dataSource);
+        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mybatis/sub/*.xml"));
+        //设置别名包
+        bean.setTypeAliasesPackage("com.springbootbasepackage.entity");
+        return bean.getObject();
+    }
+
+    @Bean(name = "subSqlSessionTemplate")
+    public SqlSessionTemplate testSqlSessionTemplate(@Qualifier("subSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
+        return new SqlSessionTemplate(sqlSessionFactory);
+    }
+
+
+    @Bean(name = "shardingMapperScannerConfigurer")
+    public MapperScannerConfigurer shardingMapperScannerConfigurer() {
+        MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
+        mapperScannerConfigurer.setSqlSessionFactoryBeanName("subSqlSessionFactory");
+        mapperScannerConfigurer.setBasePackage("com.springbootbasepackage.dao");
+        return mapperScannerConfigurer;
+    }
+
+
 
 }

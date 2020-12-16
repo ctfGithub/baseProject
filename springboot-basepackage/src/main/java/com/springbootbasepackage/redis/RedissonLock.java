@@ -18,6 +18,7 @@ public class RedissonLock {
         Config config = new Config();
 
         config.useSingleServer().setAddress("redis://127.0.0.1:6379");
+        //用于分布式redis枷锁数据处理
 //        config.useClusterServers().addNodeAddress("redis://127.0.0.1:6379").addNodeAddress("redis://127.0.0.1:6379").setPassword("").setScanInterval(1000);
 
         RedissonClient redissonClient = Redisson.create(config);
