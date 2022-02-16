@@ -36,8 +36,8 @@ public class SedisManage {
 
     private static final String CHARSET = "UTF-8";
 
-    private static final Long LOCK_EXPIRE = 5000l;          //分布式锁默认有效时间 5秒
-    private static final Long TRY_LOCK = 5000l;             //默认尝试获取分布式锁时间 5秒
+    private static final Long LOCK_EXPIRE = 5000L;          //分布式锁默认有效时间 5秒
+    private static final Long TRY_LOCK = 5000L;             //默认尝试获取分布式锁时间 5秒
     private static final String LOCK_PREFIX = "RDS_LOCK_";  //分布式锁key前缀
 
     private static final String RELEASE_SCRIPT = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";

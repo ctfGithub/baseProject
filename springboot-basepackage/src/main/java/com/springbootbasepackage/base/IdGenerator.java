@@ -112,14 +112,9 @@ public class IdGenerator {
 
     public static void main(String[] args) {
         IdGenerator idGenerator1 = IdGenerator.getDistributedIdGenerator(1);
-//        ZfIdGenerator idGenerator2 = ZfIdGenerator.getDistributedIdGenerator(2);
         for (int i = 0; i < 200; i++) {
             System.out.println(idGenerator1.nextId());
         }
-
-//        System.out.println(idGenerator2.nextId());
-
-
 
     }
 
