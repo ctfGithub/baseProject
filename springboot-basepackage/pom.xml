@@ -159,19 +159,17 @@
 
 
         <!--结束配置 spring -->
-        <!-- https://mvnrepository.com/artifact/org.apache.shardingsphere/sharding-jdbc-core -->
         <dependency>
             <groupId>org.apache.shardingsphere</groupId>
             <artifactId>sharding-jdbc-core</artifactId>
-            <version>4.0.0</version>
+            <version>4.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-transaction-core</artifactId>
+            <version>4.1.1</version>
         </dependency>
 
-        <!--   sharing 3.1.0 有分页bug，官方说升级版本解决-->
-        <dependency>
-            <groupId>org.apache.shardingsphere</groupId>
-            <artifactId>sharding-jdbc-core</artifactId>
-            <version>4.0.0-RC1</version>
-        </dependency>
 
         <!-- 解析xml 使用 -->
         <dependency>
@@ -222,6 +220,7 @@
             <artifactId>sharding-transaction-spring-boot-starter</artifactId>
             <version>3.1.0</version>
         </dependency>
+
 
 
 
