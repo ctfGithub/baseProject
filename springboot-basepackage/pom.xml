@@ -217,6 +217,11 @@
             <version>5.6.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.shardingsphere</groupId>
+            <artifactId>sharding-transaction-spring-boot-starter</artifactId>
+            <version>3.1.0</version>
+        </dependency>
 
 
 

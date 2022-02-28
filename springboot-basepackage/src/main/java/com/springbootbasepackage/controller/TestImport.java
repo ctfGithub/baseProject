@@ -2,6 +2,8 @@ package com.springbootbasepackage.controller;
 
 import com.springbootbasepackage.base.SntResult;
 import com.springbootbasepackage.service.PartnerSourceService;
+import io.shardingsphere.transaction.annotation.ShardingTransactionType;
+import io.shardingsphere.transaction.api.TransactionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,7 @@ public class TestImport {
     private PartnerSourceService partnerSourceService;
 
     @PostMapping("/importExcel")
+    @ShardingTransactionType(TransactionType.XA)
     public SntResult<Integer> importExcel(@RequestParam("file") MultipartFile file, Integer channelType) {
         //校验文件必填
 
