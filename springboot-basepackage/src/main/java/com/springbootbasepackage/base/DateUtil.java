@@ -3,12 +3,23 @@ package com.springbootbasepackage.base;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
 public final class DateUtil {
     private DateUtil() {
+    }
+
+    public static String localDateTimeConvertStr(LocalDateTime localDateTime) {
+
+        if (null == localDateTime) {
+            return null;
+        }
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(DATE_PATTERN.YYYYMMDDHHMMSS);
+        return df.format(localDateTime);
     }
 
     /**

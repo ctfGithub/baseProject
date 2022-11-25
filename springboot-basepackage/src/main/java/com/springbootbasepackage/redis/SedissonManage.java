@@ -9,11 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author : spwei
- * create at:  2019/12/25  上午9:47
- * @description: 分布式缓存和锁
- */
+
 @Slf4j
 public class SedissonManage {
 
