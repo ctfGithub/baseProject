@@ -6,6 +6,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 @Configuration
@@ -24,5 +27,23 @@ public class AsyncTaskPoolConfig {
         taskExecutor.setWaitForTasksToCompleteOnShutdown(true);
         taskExecutor.setAwaitTerminationSeconds(60);
         return taskExecutor;
+    }
+
+
+    @Bean("taskExecutors")
+    public ThreadPoolExecutor taskExecutors() {
+        int i = Runtime.getRuntime().availableProcessors();
+        System.out.println("系统最大线程数：" + i);
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+                i,
+                i,
+                5,
+                TimeUnit.SECONDS,
+                new LinkedBlockingDeque<>(Integer.MAX_VALUE),
+                new NamedThreadFactory("execl导出线程池"),
+                new ThreadPoolExecutor.DiscardPolicy())
+                ;
+        System.out.println("execl导出线程池初始化完毕-------------");
+        return threadPoolExecutor;
     }
 }
