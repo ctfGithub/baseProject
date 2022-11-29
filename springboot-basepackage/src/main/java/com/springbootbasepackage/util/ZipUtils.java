@@ -2,7 +2,9 @@ package com.springbootbasepackage.util;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -14,6 +16,7 @@ import java.util.zip.ZipOutputStream;
  * 鼠腾飞
  */
 @Slf4j
+@Component
 public class ZipUtils {
 
     private static final int BUFFER_SIZE = 2 * 1024;
@@ -269,6 +272,45 @@ public class ZipUtils {
 //		FileOutputStream fos2 = new FileOutputStream(new File("C:\\Users\\腾飞\\Desktop\\test.zip"));
 //		ZipUtils.toZip(fileList, fos2);
 
+    }
+
+
+    /**
+     * 向浏览器发送zip包
+     *
+     * @param response
+     */
+    public static void sendZip(HttpServletResponse response, File zipFile) {
+        log.info("正在发送zip包");
+        OutputStream outputStream = null;
+        BufferedInputStream fis = null;
+        try {
+            // 以流的形式下载文件。
+            fis = new BufferedInputStream(new FileInputStream(zipFile.getPath()));
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            // 清空response
+            response.reset();
+            outputStream = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String(zipFile.getName().getBytes("UTF-8"), "ISO-8859-1"));
+            outputStream.write(buffer);
+            outputStream.flush();
+            log.info("发送成功。");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

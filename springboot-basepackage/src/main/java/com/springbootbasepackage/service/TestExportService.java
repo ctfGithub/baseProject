@@ -1,6 +1,5 @@
 package com.springbootbasepackage.service;
 
-
 import javax.servlet.http.HttpServletResponse;
 
 public interface TestExportService {
@@ -9,5 +8,5 @@ public interface TestExportService {
 
     void exportExcelBySingleExcoter();
 
-    void exportExcelByManyExcoter();
+    void exportExcelByManyExcoter(HttpServletResponse response);
 }

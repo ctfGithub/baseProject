@@ -7,7 +7,9 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.springbootbasepackage.base.DateUtil;
 import com.springbootbasepackage.dto.BccAuditDetailExcelDTO;
 import com.springbootbasepackage.dto.BccAuditExcelDTO;
+import com.springbootbasepackage.service.IAsynExportExcelService;
 import com.springbootbasepackage.service.TestExportService;
+import com.springbootbasepackage.util.ZipUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,11 +31,34 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
+
+import static com.springbootbasepackage.service.serviceImpl.IAsynExportExcelServiceImpl.DATA_TOTAL_COUNT;
 
 @Service
 @Slf4j
 public class TestExportServiceImpl implements TestExportService {
+
+    // 定义导出的excel文件保存的路径
+    private String filePath = "C:\\Users\\Administrator\\Desktop\\execl\\";
+    @Resource
+    private IAsynExportExcelService asynExportExcelService;
+    /**
+     * 每批次处理的数据量
+     */
+    private static final int LIMIT = 40000;
+    // Queue是java自己的队列，是同步安全的
+    public static Queue<Map<String, Object>> queue;
+
+    static {
+        // 一个基于链接节点的无界线程安全的队列
+        queue = new ConcurrentLinkedQueue<>();
+    }
 
     @Override
     public void exportExcel(HttpServletResponse response) {
@@ -139,7 +165,52 @@ public class TestExportServiceImpl implements TestExportService {
     }
 
     @Override
-    public void exportExcelByManyExcoter() {
+    public void exportExcelByManyExcoter(HttpServletResponse response) {
+        long start = System.currentTimeMillis();
+        initQueue();
+        //异步转同步，等待所有线程都执行完毕返回 主线程才会结束
+        try {
+
+            CountDownLatch cdl = new CountDownLatch(queue.size());
+            log.info("需要的线程数:{}",queue.size());
+            while (queue.size() > 0) {
+                asynExportExcelService.excuteAsyncTaskDatabase(queue.poll(), cdl);
+            }
+            cdl.await();//能够阻塞线程 直到调用N次 countDown() 方法才释放线程
+            log.info("excel导出完成·······················");
+            //关闭流 等操作
+            //压缩文件
+            File zipFile = new File(filePath.substring(0, filePath.length() - 1) + ".zip");
+            FileOutputStream fos1 = new FileOutputStream(zipFile);
+            //压缩文件目录
+            ZipUtils.toZip(filePath, fos1, true);
+            //发送zip包
+            ZipUtils.sendZip(response, zipFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        long end = System.currentTimeMillis();
+        log.info("任务执行完毕共消耗：  " + (end - start) + "ms");
 
     }
+
+    /**
+     * 初始化队列
+     */
+    public void initQueue() {
+        long dataTotalCount = DATA_TOTAL_COUNT;// 数据的总数
+        int listCount = (int) dataTotalCount;
+        // 计算出多少页，即循环次数
+        int count = listCount / LIMIT + (listCount % LIMIT > 0 ? 1 : 0);
+        for (int i = 1; i <= count; i++) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("page", i);
+            map.put("limit", LIMIT);
+            map.put("path", filePath);
+            //添加元素
+            queue.offer(map);
+        }
+    }
+
+
 }

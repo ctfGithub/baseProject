@@ -4,7 +4,10 @@ package com.springbootbasepackage.redis;
 import com.springbootbasepackage.exception.SntException;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -13,17 +16,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class SedissonManage {
 
+    @Resource
     private RedissonClient redissonClient;
 
     private String PREFIX = "RDS_LOCK:" + System.getenv("project.name") + ":";
-
-    public SedissonManage(RedissonClient redissonClient) {
-        this.redissonClient = redissonClient;
-    }
-
-    public RedissonClient getRedissonClient() {
-        return redissonClient;
-    }
 
     /**
      * 锁 不带超时时间 慎用

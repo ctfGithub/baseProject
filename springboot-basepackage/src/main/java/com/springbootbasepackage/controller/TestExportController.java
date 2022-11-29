@@ -6,11 +6,9 @@ import com.springbootbasepackage.base.ExcelExport;
 import com.springbootbasepackage.base.Export;
 import com.springbootbasepackage.redis.SedissonManage;
 import com.springbootbasepackage.service.TestExportService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +28,7 @@ public class TestExportController {
     @Resource
     private TestExportService testExportService;
 
-    @Resource
+    //@Resource
     private SedissonManage sedissonManage;
 
     /**
@@ -93,9 +91,9 @@ public class TestExportController {
      */
 
     @PostMapping("/query/exportExcelByManyExcoter")
-    public void exportExcelByManyExcoter() {
+    public void exportExcelByManyExcoter(HttpServletResponse response) {
 
-        testExportService.exportExcelByManyExcoter();
+        testExportService.exportExcelByManyExcoter(response);
     }
 
 
