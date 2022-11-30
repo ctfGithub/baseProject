@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class AsyncTaskPoolConfig {
     @Bean("taskExecutor")
     public Executor taskExecutor() {
-        int i = Runtime.getRuntime().availableProcessors();
+        int i = Runtime.getRuntime().availableProcessors();//获取服务器内核数
         System.out.println("系统最大线程数：" + i);
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setCorePoolSize(i);
@@ -32,7 +32,7 @@ public class AsyncTaskPoolConfig {
 
     @Bean("taskExecutors")
     public ThreadPoolExecutor taskExecutors() {
-        int i = Runtime.getRuntime().availableProcessors();
+        int i = Runtime.getRuntime().availableProcessors();//获取服务器内核数
         System.out.println("系统最大线程数：" + i);
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
                 i,
