@@ -9,4 +9,6 @@ public interface TestExportService {
     void exportExcelBySingleExcoter();
 
     void exportExcelByManyExcoter(HttpServletResponse response);
+
+    void exportExcelBySingleExcoterZIP();
 }

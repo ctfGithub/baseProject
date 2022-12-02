@@ -1,5 +1,6 @@
 package com.springbootbasepackage.service.serviceImpl;
 
+import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -34,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -144,33 +148,12 @@ public class TestExportServiceImpl implements TestExportService {
 
     }
 
-
-    public static FileItem createFileItem(String filePath, String fileName){
-        String fieldName = "file";
-        FileItemFactory factory = new DiskFileItemFactory(16, null);
-        FileItem item = factory.createItem(fieldName, "text/plain", false,fileName);
-        File newfile = new File(filePath);
-        int bytesRead = 0;
-        byte[] buffer = new byte[8192];
-        try (FileInputStream fis = new FileInputStream(newfile);
-             OutputStream os = item.getOutputStream()) {
-            while ((bytesRead = fis.read(buffer, 0, 8192))!= -1)
-            {
-                os.write(buffer, 0, bytesRead);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return item;
-    }
-
     @Override
     public void exportExcelByManyExcoter(HttpServletResponse response) {
         long start = System.currentTimeMillis();
         initQueue();
         //异步转同步，等待所有线程都执行完毕返回 主线程才会结束
         try {
-
             CountDownLatch cdl = new CountDownLatch(queue.size());
             log.info("需要的线程数:{}",queue.size());
             while (queue.size() > 0) {
@@ -194,6 +177,68 @@ public class TestExportServiceImpl implements TestExportService {
 
     }
 
+    @Override
+    public void exportExcelBySingleExcoterZIP() {
+        String fileName = "卡券使用导出" + DateUtil.localDateTimeConvertStr(LocalDateTime.now()) + ".zip";
+        String fileFolder = System.getProperty("user.dir")+ File.separator+fileName.substring(0,fileName.lastIndexOf("."));
+        //创建文件夹
+        new File(fileFolder).mkdirs();
+        File zipFile = null;
+
+        try {
+            //分页查询 避免 内存泄露
+            //eg：例如 数据总数 是10001，分页的查询 是每次 100 ，可以动态 配置
+            Integer couponBeesTaskIPageCount = 1001;
+            Integer exportNum =100;
+
+            Integer pageNoCount = (couponBeesTaskIPageCount / exportNum) + (couponBeesTaskIPageCount % exportNum == 0 ? 0 : 1);
+            for (int pageNo = 0; pageNo < pageNoCount; pageNo++) {
+                String templateFileName = fileFolder+ File.separator+"卡券使用导出"+".xlsx";
+
+                //执行sql  分页查询 current  = i ;pageSize = exportNum
+                List<BccAuditExcelDTO> usedCouponProperties= new ArrayList<>();
+                List<BccAuditDetailExcelDTO> couponRecordSummaryProperties= new ArrayList<>();
+
+                FileOutputStream output = new FileOutputStream(templateFileName);
+                ExcelWriter excelWriter = EasyExcel.write(output).build();
+                WriteSheet writeSheet1 = EasyExcel.writerSheet((2 * pageNo), "单数sheet"+pageNo)
+                        .head(BccAuditExcelDTO.class)
+                        .build();
+                WriteSheet writeSheet2 = EasyExcel.writerSheet((2 * pageNo+1), "双数sheet"+pageNo)
+                        .head(BccAuditDetailExcelDTO.class)
+                        .build();
+                excelWriter.write(usedCouponProperties, writeSheet1);
+                excelWriter.write(couponRecordSummaryProperties, writeSheet2);
+
+                // 关闭流
+                excelWriter.finish();
+                output.flush();
+
+            }
+
+            //文件夹 转换成 zip
+            zipFile= ZipUtil.zip(fileFolder);
+
+            //封装MultipartFile对象
+            MultipartFile multipartFile = new CommonsMultipartFile(createFileItemZip(new FileInputStream(zipFile), fileName));
+
+            //上传文件服务器 ，生成文件链接
+
+        }catch (Exception e){
+            //异常记录 一下
+            log.error("导出报错{}", JSONUtil.toJsonStr(e));
+        }finally {
+            if(StringUtils.isNotBlank(fileFolder) || Objects.nonNull(zipFile)){
+                try {
+                    zipFile.delete();
+                    deleteFile(new File(fileFolder));
+                } catch (Exception e) {
+                    log.error("deleteIfExists occur exception:{}", e);
+                }
+            }
+        }
+    }
+
     /**
      * 初始化队列
      */
@@ -212,5 +257,80 @@ public class TestExportServiceImpl implements TestExportService {
         }
     }
 
+
+    /**
+     * 文件夹 转成zip 压缩包
+     * @param is
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+    private static FileItem createFileItemZip(InputStream is, String fileName) throws IOException {
+        FileItemFactory factory = new DiskFileItemFactory(16, null);
+        FileItem fileItem = factory.createItem("textField", "application/zip", true, fileName);
+
+        OutputStream fileItemOutStream = fileItem.getOutputStream();
+
+        IOUtils.copy(is, fileItemOutStream);
+
+        return fileItem;
+    }
+
+    /**
+     * 删除 文件夹及 文件夹 下面的子文件
+     * @param file
+     * @return
+     */
+    public static Boolean deleteFile(File file) {
+        //判断文件不为null或文件目录存在
+        if (file == null || !file.exists()) {
+            log.info("文件删除失败,请检查文件是否存在以及文件路径是否正确");
+            return false;
+        }
+        //获取目录下子文件
+        File[] files = file.listFiles();
+        //遍历该目录下的文件对象
+        for (File f : files) {
+            //判断子目录是否存在子目录,如果是文件则删除
+            if (f.isDirectory()) {
+                //递归删除目录下的文件
+                deleteFile(f);
+            } else {
+                //文件删除
+                f.delete();
+                //打印文件名
+                log.info("文件名：{}" ,f.getName());
+            }
+        }
+        //文件夹删除
+        file.delete();
+        log.info("目录名：{}" , file.getName());
+        return true;
+    }
+
+    /**
+     * 转换成 xlsx 文件
+     * @param filePath
+     * @param fileName
+     * @return
+     */
+    public static FileItem createFileItem(String filePath, String fileName){
+        String fieldName = "file";
+        FileItemFactory factory = new DiskFileItemFactory(16, null);
+        FileItem item = factory.createItem(fieldName, "text/plain", false,fileName);
+        File newfile = new File(filePath);
+        int bytesRead = 0;
+        byte[] buffer = new byte[8192];
+        try (FileInputStream fis = new FileInputStream(newfile);
+             OutputStream os = item.getOutputStream()) {
+            while ((bytesRead = fis.read(buffer, 0, 8192))!= -1)
+            {
+                os.write(buffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return item;
+    }
 
 }

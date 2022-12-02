@@ -72,7 +72,7 @@ public class TestExportController {
 
 
     /**
-     * 导出异步 导出 （单线程）-文件上传到 文件服务器
+     * 导出异步 导出 （单线程）-文件上传到 文件服务器 excel 文件
      */
 
     @PostMapping("/query/exportExcelBySingleExcoter")
@@ -87,12 +87,26 @@ public class TestExportController {
 
 
     /**
+     * 导出异步 导出 （单线程）-文件上传到 文件服务器 zip 文件
+     */
+
+    @PostMapping("/query/exportExcelBySingleExcoterZIP")
+    public void exportExcelBySingleExcoterZIP() {
+        boolean ceshi = sedissonManage.tryLock("ceshi", TimeUnit.SECONDS, 50, 5);
+        if(ceshi){
+            CompletableFuture.runAsync(()->{
+                testExportService.exportExcelBySingleExcoterZIP();
+            });
+        }
+    }
+
+
+    /**
      * 导出异步 导出 （多线程）-文件上传到 文件服务器
      */
 
     @PostMapping("/query/exportExcelByManyExcoter")
     public void exportExcelByManyExcoter(HttpServletResponse response) {
-
         testExportService.exportExcelByManyExcoter(response);
     }
 
