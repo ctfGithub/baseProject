@@ -12,10 +12,15 @@ import com.springbootbasepackage.service.PartnerSourceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,8 +29,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PartnerSourceServiceImpl implements PartnerSourceService {
 
+    private static final String ZB_INCREMENT = "bees:biz-zb-increment-id:";
+    private static final DecimalFormat ID_FORMAT = new DecimalFormat("000000");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+
+
     @Autowired
     private PartnerSourceDAO partnerSourceDAO;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @Override
     public List<PartnerSourceDTO> testPartnerSource() {
@@ -58,5 +72,19 @@ public class PartnerSourceServiceImpl implements PartnerSourceService {
         BeanUtils.copyProperties(partnerSourceDTO,partnerSourceDO);
         Integer cnt = partnerSourceDAO.insert(partnerSourceDO);
         return cnt;
+    }
+
+    @Override
+    public String testRedis() {
+        // 业务code
+        String bizCode = "ZB";
+        // 年月日
+        String yyyyMMdd = FORMATTER.format(LocalDateTime.now());
+        // 当日订单号:key
+        String key = ZB_INCREMENT + bizCode  + yyyyMMdd;
+        // 当日订单号
+        String id = ID_FORMAT.format(redisTemplate.opsForValue().increment(key));
+        System.out.println(bizCode  + yyyyMMdd + id);
+        return bizCode  + yyyyMMdd + id;
     }
 }

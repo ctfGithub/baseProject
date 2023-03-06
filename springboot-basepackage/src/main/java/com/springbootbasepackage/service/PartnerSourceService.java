@@ -12,4 +12,6 @@ public interface PartnerSourceService {
     void importExcel(InputStream inputStream, Integer channelType);
 
     Integer save(PartnerSourceDTO partnerSourceDTO);
+
+    String testRedis();
 }

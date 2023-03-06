@@ -30,6 +30,12 @@ public class PartnerSourceController {
         return SntResult.ok(cnt);
     }
 
+    @PostMapping("/testRedis")
+    public SntResult<String> testRedis (){
+        String cnt  = partnerSourceService.testRedis();
+        return SntResult.ok(cnt);
+    }
+
 
 
 }

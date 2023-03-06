@@ -6,7 +6,6 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.redisson.api.RedissonReactiveClient;
 import org.redisson.config.Config;
-import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.params.SetParams;
 
@@ -17,16 +16,6 @@ import java.util.concurrent.TimeUnit;
  * 连接redis
  */
 public class RedisClass {
-
-    @Autowired
-    private RedissonClient redissonClient;
-
-    @Autowired
-    private RedisLockService redisLockService;
-
-    @Autowired
-    private SedisManage redisManager;
-
 
 
     @Test
@@ -64,13 +53,10 @@ public class RedisClass {
         }
 
 
-        
-
-
-
-
 
     }
+
+
 
 
 }
