@@ -23,9 +23,7 @@ public class PartnerSourceController {
     @Autowired
     private PartnerSourceService partnerSourceService;
 
-
-
-    @GetMapping("/testPartnerSource")
+    @GetMapping("/List")
     @ApiOperation("伙伴得分列表")
     public List<PartnerSourceDTO> testPartnerSource (){
         List<PartnerSourceDTO> list  = partnerSourceService.testPartnerSource();
@@ -39,8 +37,15 @@ public class PartnerSourceController {
         return SntResult.ok(cnt);
     }
 
+    @PostMapping("/update")
+    @ApiOperation("更新保存伙伴得分")
+    public SntResult<Integer> update (@RequestBody PartnerSourceDTO partnerSourceDTO){
+        Integer cnt  = partnerSourceService.update(partnerSourceDTO);
+        return SntResult.ok(cnt);
+    }
+
     @PostMapping("/testRedis")
-    @ApiOperation("测试使用redis")
+    @ApiOperation("账号生成")
     public SntResult<String> testRedis (){
         String cnt  = partnerSourceService.testRedis();
         return SntResult.ok(cnt);

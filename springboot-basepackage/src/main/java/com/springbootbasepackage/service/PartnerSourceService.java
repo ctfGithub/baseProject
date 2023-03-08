@@ -14,4 +14,6 @@ public interface PartnerSourceService {
     Integer save(PartnerSourceDTO partnerSourceDTO);
 
     String testRedis();
+
+    Integer update(PartnerSourceDTO partnerSourceDTO);
 }

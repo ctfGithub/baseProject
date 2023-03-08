@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.io.BufferedInputStream;
@@ -44,7 +45,6 @@ public class PartnerSourceServiceImpl implements PartnerSourceService {
     @Override
     public List<PartnerSourceDTO> testPartnerSource() {
         List<PartnerSourceDTO> list = partnerSourceDAO.testPartnerSource();
-
         return list;
     }
 
@@ -86,5 +86,13 @@ public class PartnerSourceServiceImpl implements PartnerSourceService {
         String id = ID_FORMAT.format(redisTemplate.opsForValue().increment(key));
         System.out.println(bizCode  + yyyyMMdd + id);
         return bizCode  + yyyyMMdd + id;
+    }
+
+    @Override
+    public Integer update(PartnerSourceDTO partnerSourceDTO) {
+        Assert.notNull(partnerSourceDTO.getId(),"主键id不能为空");
+        PartnerSourceDO PartnerSourcedO= new PartnerSourceDO();
+        BeanUtils.copyProperties(partnerSourceDTO,PartnerSourcedO);
+        return partnerSourceDAO.update(PartnerSourcedO);
     }
 }
