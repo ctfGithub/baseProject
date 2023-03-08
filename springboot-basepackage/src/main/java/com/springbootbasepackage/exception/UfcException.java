@@ -1,6 +1,7 @@
 package com.springbootbasepackage.exception;
 
 
+import com.springbootbasepackage.base.SntException;
 import com.springbootbasepackage.constant.UfcErrEnum;
 
 

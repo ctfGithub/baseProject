@@ -1,11 +1,14 @@
 package com.springbootbasepackage.redis;
 
 
-import com.springbootbasepackage.exception.SntException;
+import com.springbootbasepackage.base.SntException;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.redisson.api.RAtomicLong;
+import org.redisson.api.RBucket;
+import org.redisson.api.RList;
+import org.redisson.api.RLock;
+import org.redisson.api.RSet;
+import org.redisson.api.RedissonClient;
 
 import javax.annotation.Resource;
 import java.util.Collection;

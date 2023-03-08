@@ -44,6 +44,13 @@ public class PartnerSourceController {
         return SntResult.ok(cnt);
     }
 
+    @PostMapping("/delete")
+    @ApiOperation("删除保存伙伴得分")
+    public SntResult<Integer> delete (@RequestBody PartnerSourceDTO partnerSourceDTO){
+        Integer cnt  = partnerSourceService.delete(partnerSourceDTO);
+        return SntResult.ok(cnt);
+    }
+
     @PostMapping("/testRedis")
     @ApiOperation("账号生成")
     public SntResult<String> testRedis (){

@@ -5,6 +5,7 @@ import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.fastjson.JSONObject;
 import com.springbootbasepackage.base.ExcelBodyApply;
 import com.springbootbasepackage.base.ExcelListener;
+import com.springbootbasepackage.base.SntException;
 import com.springbootbasepackage.dao.PartnerSourceDAO;
 import com.springbootbasepackage.dto.PartnerSourceDTO;
 import com.springbootbasepackage.entity.PartnerSourceDO;
@@ -23,6 +24,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -90,9 +92,17 @@ public class PartnerSourceServiceImpl implements PartnerSourceService {
 
     @Override
     public Integer update(PartnerSourceDTO partnerSourceDTO) {
-        Assert.notNull(partnerSourceDTO.getId(),"主键id不能为空");
+        if(Objects.isNull(partnerSourceDTO.getId())){
+           throw new SntException("更新操作-主键id不能为空") ;
+        }
         PartnerSourceDO PartnerSourcedO= new PartnerSourceDO();
         BeanUtils.copyProperties(partnerSourceDTO,PartnerSourcedO);
         return partnerSourceDAO.update(PartnerSourcedO);
+    }
+
+    @Override
+    public Integer delete(PartnerSourceDTO partnerSourceDTO) {
+        Assert.notNull(partnerSourceDTO.getId(),"删除操作-主键id不能为空");
+        return partnerSourceDAO.delete(partnerSourceDTO.getId());
     }
 }

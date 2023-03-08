@@ -63,9 +63,8 @@
                 AGREEMENT_URL = #{agreementUrl},
             </if>
         </set>
-        where PARTNER_ID = #{partnerId}
-        and ROW_STATUS = 0
-        and ROW_VERSION = #{rowVersion}
+        where ROW_STATUS = 0
+        and id = #{id}
     </update>
 
     <!-- 删除 -->

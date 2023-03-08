@@ -2,32 +2,32 @@ package com.springbootbasepackage.base;
 
 
 public class SntException extends RuntimeException {
-    private String msg;
+    private String message;
     private String code;
 
     public SntException() {
     }
 
-    public SntException(String msg) {
-        super(msg);
-        this.msg = msg;
+    public SntException(String message) {
+        super(message);
+        this.message = message;
     }
 
-    public SntException(String code, String msg) {
-        super(msg);
-        this.msg = msg;
+    public SntException(String code, String message) {
+        super(message);
+        this.message = message;
         this.code = code;
     }
 
-    public SntException(String msg, String code, Throwable e) {
-        super(msg, e);
+    public SntException(String message, String code, Throwable e) {
+        super(message, e);
         this.code = code;
-        this.msg = msg;
+        this.message = message;
     }
 
-    public SntException(String msg, Throwable e) {
-        super(msg, e);
-        this.msg = msg;
+    public SntException(String message, Throwable e) {
+        super(message, e);
+        this.message = message;
     }
 
     public SntException(Throwable e) {
@@ -35,7 +35,7 @@ public class SntException extends RuntimeException {
     }
 
     public String getMsg() {
-        return this.msg;
+        return this.message;
     }
 
     public String getCode() {

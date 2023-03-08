@@ -16,4 +16,6 @@ public interface PartnerSourceService {
     String testRedis();
 
     Integer update(PartnerSourceDTO partnerSourceDTO);
+
+    Integer delete(PartnerSourceDTO partnerSourceDTO);
 }
