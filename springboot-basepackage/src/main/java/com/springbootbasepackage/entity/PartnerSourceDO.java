@@ -13,6 +13,11 @@ import lombok.Data;
 public class PartnerSourceDO  {
 
     /**
+     *主键
+     */
+    private Long id;
+
+    /**
      * 创建人
      */
     private String creator;
