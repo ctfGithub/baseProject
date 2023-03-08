@@ -46,7 +46,7 @@ public class PartnerSourceController {
 
     @PostMapping("/delete")
     @ApiOperation("删除保存伙伴得分")
-    public SntResult<Integer> delete (@RequestBody PartnerSourceDTO partnerSourceDTO){
+    public SntResult delete (@RequestBody PartnerSourceDTO partnerSourceDTO){
         Integer cnt  = partnerSourceService.delete(partnerSourceDTO);
         return SntResult.ok(cnt);
     }
