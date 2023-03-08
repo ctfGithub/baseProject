@@ -15,7 +15,7 @@ public class CommonController {
 
     @ExceptionHandler(SntException.class)
     @ResponseBody//为了返回数据
-    public SntResult handleException(Exception ex) {
+    public SntResult handleException(SntException ex) {
         //将返回信息写入response
         logger.warn("业务异常 {}", ex.getMessage());
         logger.error("BusinessException {}", ex.getMessage(), ex);
