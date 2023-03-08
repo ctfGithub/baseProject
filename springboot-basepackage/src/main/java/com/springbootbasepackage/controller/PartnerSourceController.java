@@ -3,6 +3,7 @@ package com.springbootbasepackage.controller;
 
 import com.springbootbasepackage.base.SntResult;
 import com.springbootbasepackage.dto.PartnerSourceDTO;
+import com.springbootbasepackage.dto.PartnerSourceDeleteDTO;
 import com.springbootbasepackage.service.PartnerSourceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,7 +47,7 @@ public class PartnerSourceController {
 
     @PostMapping("/delete")
     @ApiOperation("删除保存伙伴得分")
-    public SntResult delete (@RequestBody PartnerSourceDTO partnerSourceDTO){
+    public SntResult delete (@RequestBody PartnerSourceDeleteDTO partnerSourceDTO){
         Integer cnt  = partnerSourceService.delete(partnerSourceDTO);
         return SntResult.ok(cnt);
     }

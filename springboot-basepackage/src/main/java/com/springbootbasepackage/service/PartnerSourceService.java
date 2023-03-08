@@ -1,6 +1,7 @@
 package com.springbootbasepackage.service;
 
 import com.springbootbasepackage.dto.PartnerSourceDTO;
+import com.springbootbasepackage.dto.PartnerSourceDeleteDTO;
 
 import java.io.InputStream;
 import java.util.List;
@@ -17,5 +18,5 @@ public interface PartnerSourceService {
 
     Integer update(PartnerSourceDTO partnerSourceDTO);
 
-    Integer delete(PartnerSourceDTO partnerSourceDTO);
+    Integer delete(PartnerSourceDeleteDTO partnerSourceDTO);
 }

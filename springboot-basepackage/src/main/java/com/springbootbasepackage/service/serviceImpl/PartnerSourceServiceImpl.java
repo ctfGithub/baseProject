@@ -8,6 +8,7 @@ import com.springbootbasepackage.base.ExcelListener;
 import com.springbootbasepackage.base.SntException;
 import com.springbootbasepackage.dao.PartnerSourceDAO;
 import com.springbootbasepackage.dto.PartnerSourceDTO;
+import com.springbootbasepackage.dto.PartnerSourceDeleteDTO;
 import com.springbootbasepackage.entity.PartnerSourceDO;
 import com.springbootbasepackage.service.PartnerSourceService;
 import lombok.extern.slf4j.Slf4j;
@@ -101,7 +102,7 @@ public class PartnerSourceServiceImpl implements PartnerSourceService {
     }
 
     @Override
-    public Integer delete(PartnerSourceDTO partnerSourceDTO) {
+    public Integer delete(PartnerSourceDeleteDTO partnerSourceDTO) {
         Assert.notNull(partnerSourceDTO.getId(),"删除操作-主键id不能为空");
         return partnerSourceDAO.delete(partnerSourceDTO.getId());
     }
