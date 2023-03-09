@@ -29,15 +29,15 @@ public class LoginController {
         return SntResult.ok(yzm);
     }
 
-
-
     //2、手机号和 验证码生成token
-    @PostMapping("/tokenCreate")
+    @PostMapping("/login/account")
     @ApiOperation("登录")
-    public SntResult<String> tokenCreate (@RequestBody LoginIphoneAndYzmDTO loginIphoneAndYzmDTO){
-        String token  = loginService.tokenCreate(loginIphoneAndYzmDTO);
-        return SntResult.ok(token);
+    public SntResult<LoginIphoneAndYzmDTO> login (@RequestBody LoginIphoneAndYzmDTO loginIphoneAndYzmDTO){
+        LoginIphoneAndYzmDTO dto = loginService.login(loginIphoneAndYzmDTO);
+        return SntResult.ok(dto);
     }
+
+
 
 
 }

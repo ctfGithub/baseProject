@@ -5,7 +5,8 @@ import com.springbootbasepackage.dto.LoginIphoneDTO;
 
 public interface LoginService {
 
-     String tokenCreate(LoginIphoneAndYzmDTO loginIphoneAndYzmDTO);
 
      String sendIphone(LoginIphoneDTO loginIphoneDTO);
+
+     LoginIphoneAndYzmDTO login(LoginIphoneAndYzmDTO loginIphoneAndYzmDTO);
 }

@@ -1,16 +1,22 @@
 package com.springbootbasepackage.service.serviceImpl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.springbootbasepackage.base.SntException;
 import com.springbootbasepackage.dto.LoginIphoneAndYzmDTO;
 import com.springbootbasepackage.dto.LoginIphoneDTO;
+import com.springbootbasepackage.dto.UserDTO;
 import com.springbootbasepackage.redis.RedisUtil;
 import com.springbootbasepackage.service.LoginService;
-import groovy.util.logging.Slf4j;
+import com.springbootbasepackage.service.UserService;
+import com.springbootbasepackage.util.TokenUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -18,6 +24,14 @@ public class LoginServiceImpl implements LoginService {
 
     @Resource
     private RedisUtil redisUtil;
+
+    @Resource
+    private RedisTemplate redisTemplate;
+
+
+    @Resource
+    private UserService userService;
+
 
     @Override
     public String sendIphone(LoginIphoneDTO loginIphoneDTO) {
@@ -28,18 +42,44 @@ public class LoginServiceImpl implements LoginService {
         return yzm;
     }
 
+
     @Override
-    public String tokenCreate(LoginIphoneAndYzmDTO loginIphoneAndYzmDTO) {
-        String yzm = (String) redisUtil.get(loginIphoneAndYzmDTO.getIphone());
-        if(!loginIphoneAndYzmDTO.getYzm().equals(yzm)){
-            throw new SntException("手机号和验证码校验失败，请重新发送验证码");
+    public LoginIphoneAndYzmDTO login(LoginIphoneAndYzmDTO loginIphoneAndYzmDTO) {
+        UserDTO user = new UserDTO();
+        user.setIphone(loginIphoneAndYzmDTO.getIphone());
+        if(StringUtils.isNotBlank(loginIphoneAndYzmDTO.getYzm())){
+            //校验验证码
+            String yzm = (String) redisUtil.get(loginIphoneAndYzmDTO.getIphone());
+            if(!loginIphoneAndYzmDTO.getYzm().equals(yzm)){
+                throw new SntException("验证码不正确");
+            }
         }
-        //生成token
-        UUID uuid= UUID.randomUUID();
-        String token = uuid.toString();
-        redisUtil.set("login:"+loginIphoneAndYzmDTO.getIphone(),token);
-        return token;
+
+        List<UserDTO> users = userService.queryByUser(user);
+        if(CollUtil.isEmpty(users)){
+            return loginIphoneAndYzmDTO;
+        }else{
+            if(loginIphoneAndYzmDTO.getIphone() != null && loginIphoneAndYzmDTO.getYzm() != null) {
+                String token = TokenUtil.sign(loginIphoneAndYzmDTO.getIphone(), loginIphoneAndYzmDTO.getYzm());
+                loginIphoneAndYzmDTO.setToken(token);
+                log.info("token:{}",token);
+                //断言token不为空，并以用户名作为key，存入redis
+                assert token != null;
+
+                //生成token
+                //UUID uuid= UUID.randomUUID();
+                //String token = uuid.toString();
+                redisTemplate.opsForValue().set(loginIphoneAndYzmDTO.getIphone(),token);
+                return loginIphoneAndYzmDTO;
+            }else{
+                return loginIphoneAndYzmDTO;
+            }
+        }
     }
+
+
+
+
 
 
 }
