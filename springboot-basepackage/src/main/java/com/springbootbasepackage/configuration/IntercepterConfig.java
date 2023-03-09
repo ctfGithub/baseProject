@@ -27,7 +27,8 @@ public class IntercepterConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry){
         List<String> excludePath = new ArrayList<>();
         //登录
-        List<String> paths = Arrays.asList("/loginController/login/account", "/loginController/sendIphone");
+        List<String> paths = Arrays.asList("/loginController/login/account", "/loginController/sendIphone",
+                "/swagger-ui.html","/null/**","/swagger-resources/**","/swagger/**","/webjars/**");
         excludePath.addAll(paths);
         registry.addInterceptor(tokenInterceptor)
                 .addPathPatterns("/**")

@@ -26,28 +26,14 @@ public class TokenInterceptor implements HandlerInterceptor {
         log.info("url:{}",requestURI);
 
         String token = request.getHeader("token");
-        if (token != null || requestURI.contains("swagger") ||  requestURI.contains("/favicon.ico")) {
+        if (token != null) {
             //验证token
-            if(requestURI.contains("swagger") ||  requestURI.contains("/favicon.ico")){
+            boolean result = TokenUtil.verify(token);
+            if (result) {
                 log.error("通过拦截器");
                 return true;
-            }else{
-                boolean result = TokenUtil.verify(token);
-                if (result) {
-                    log.error("通过拦截器");
-                    return true;
-                }
             }
         }
-
-        //if (token != null) {
-        //    //验证token
-        //    boolean result = TokenUtil.verify(token);
-        //    if (result) {
-        //        log.error("通过拦截器");
-        //        return true;
-        //    }
-        //}
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
         PrintWriter out = null;
