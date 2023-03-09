@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
+/**
+ * 登录拦截请求 ，校验 token 用户数据信息
+ */
 @Component
 public class IntercepterConfig implements WebMvcConfigurer {
 

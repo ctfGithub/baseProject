@@ -5,8 +5,6 @@ logging:
     com.springbootbasepackage.controller: debug
 
 
-
-
 server:
   port: 8099
   compression:

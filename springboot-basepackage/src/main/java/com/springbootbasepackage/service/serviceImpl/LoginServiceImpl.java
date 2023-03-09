@@ -38,7 +38,7 @@ public class LoginServiceImpl implements LoginService {
         Random randObj = new Random();
         String yzm = Integer.toString(100000 + randObj.nextInt(900000));
         //验证码  放在Redis 中
-        redisUtil.set(loginIphoneDTO.getIphone(),yzm);
+        redisUtil.set(loginIphoneDTO.getIphone()+"yzm",yzm);
         return yzm;
     }
 
@@ -49,7 +49,7 @@ public class LoginServiceImpl implements LoginService {
         user.setIphone(loginIphoneAndYzmDTO.getIphone());
         if(StringUtils.isNotBlank(loginIphoneAndYzmDTO.getYzm())){
             //校验验证码
-            String yzm = (String) redisUtil.get(loginIphoneAndYzmDTO.getIphone());
+            String yzm = (String) redisUtil.get(loginIphoneAndYzmDTO.getIphone()+"yzm");
             if(!loginIphoneAndYzmDTO.getYzm().equals(yzm)){
                 throw new SntException("验证码不正确");
             }
