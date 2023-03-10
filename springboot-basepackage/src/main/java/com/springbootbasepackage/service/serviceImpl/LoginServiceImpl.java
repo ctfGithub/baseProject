@@ -5,12 +5,12 @@ import com.springbootbasepackage.base.SntException;
 import com.springbootbasepackage.dto.LoginIphoneAndYzmDTO;
 import com.springbootbasepackage.dto.LoginIphoneDTO;
 import com.springbootbasepackage.dto.UserDTO;
+import com.springbootbasepackage.redis.SedissonManage;
 import com.springbootbasepackage.service.LoginService;
 import com.springbootbasepackage.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -33,7 +33,7 @@ public class LoginServiceImpl implements LoginService {
 
 
     @Resource
-    private RedissonClient redissonClient;
+    private SedissonManage sedissonManage;
 
 
     @Override
@@ -48,7 +48,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public LoginIphoneAndYzmDTO login(LoginIphoneAndYzmDTO loginIphoneAndYzmDTO) {
-        RLock lock = redissonClient.getLock("login:"+loginIphoneAndYzmDTO.getIphone());
+        RLock lock = sedissonManage.lock("login:"+loginIphoneAndYzmDTO.getIphone());
         if(!lock.tryLock()){
             throw new SntException("请稍后重试");
         }
