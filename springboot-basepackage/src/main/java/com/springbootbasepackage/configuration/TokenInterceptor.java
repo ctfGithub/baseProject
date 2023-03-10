@@ -49,7 +49,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         try {
             JSONObject json = new JSONObject();
             json.put("success", "false");
-            json.put("msg", "认证失败，未通过拦截器");
+            json.put("msg", "认证失败，请重新登陆");
             json.put("code", "500");
             response.getWriter().append(json.toJSONString());
             log.error("认证失败，未通过拦截器");
