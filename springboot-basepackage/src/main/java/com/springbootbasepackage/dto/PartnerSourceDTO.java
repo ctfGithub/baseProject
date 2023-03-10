@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel(value="伙伴得分")
-public class PartnerSourceDTO {
+public class PartnerSourceDTO implements Serializable {
 
     /**
      * 

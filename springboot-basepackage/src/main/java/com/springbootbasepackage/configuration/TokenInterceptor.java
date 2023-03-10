@@ -1,18 +1,25 @@
 package com.springbootbasepackage.configuration;
 
 import com.alibaba.fastjson.JSONObject;
-import com.springbootbasepackage.util.TokenUtil;
+import com.springbootbasepackage.dto.LoginIphoneAndYzmDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
 public class TokenInterceptor implements HandlerInterceptor {
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -28,9 +35,11 @@ public class TokenInterceptor implements HandlerInterceptor {
         String token = request.getHeader("token");
         if (token != null) {
             //验证token
-            boolean result = TokenUtil.verify(token);
-            if (result) {
-                log.error("通过拦截器");
+            LoginIphoneAndYzmDTO dto = (LoginIphoneAndYzmDTO) redisTemplate.opsForValue().get(token);
+            //boolean result = TokenUtil.verify(token);
+            if (Objects.nonNull(dto)) {
+                log.info("通过拦截器");
+                redisTemplate.opsForValue().set(token,dto,30L, TimeUnit.MINUTES);
                 return true;
             }
         }
