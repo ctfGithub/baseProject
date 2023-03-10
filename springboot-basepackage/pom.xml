@@ -186,13 +186,6 @@
         </dependency>
 
 
-        <!-- redisson 用于lock枷锁处理 -->
-        <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson</artifactId>
-            <version>3.13.5</version>
-        </dependency>
-
         <!-- test 类 -->
         <dependency>
             <groupId>junit</groupId>
@@ -273,6 +266,12 @@
             <version>3.5.0</version>
         </dependency>
 
+        <!-- redisson 用于lock枷锁处理 -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.14.1</version>
+        </dependency>
 
 
         <dependency>

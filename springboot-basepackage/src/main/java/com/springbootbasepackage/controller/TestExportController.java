@@ -1,11 +1,11 @@
 package com.springbootbasepackage.controller;
 
-import com.springbootbasepackage.dto.FundTransactApplyDTO;
-import com.springbootbasepackage.query.FundTransactApplyQuery;
 import com.springbootbasepackage.base.ExcelExport;
 import com.springbootbasepackage.base.Export;
-import com.springbootbasepackage.redis.SedissonManage;
+import com.springbootbasepackage.dto.FundTransactApplyDTO;
+import com.springbootbasepackage.query.FundTransactApplyQuery;
 import com.springbootbasepackage.service.TestExportService;
+import org.redisson.api.RLock;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/testExport")
@@ -28,8 +27,9 @@ public class TestExportController {
     @Resource
     private TestExportService testExportService;
 
-    //@Resource
-    private SedissonManage sedissonManage;
+    @Resource
+    private org.redisson.api.RedissonClient redissonClient;
+
 
     /**
      * 第一种方法导出 （实时响应 前端）
@@ -77,8 +77,8 @@ public class TestExportController {
 
     @PostMapping("/query/exportExcelBySingleExcoter")
     public void exportExcelBySingleExcoter() {
-        boolean ceshi = sedissonManage.tryLock("ceshi", TimeUnit.SECONDS, 50, 5);
-        if(ceshi){
+        RLock lock = redissonClient.getLock("ceshi");
+        if(lock.tryLock()){
             CompletableFuture.runAsync(()->{
                 testExportService.exportExcelBySingleExcoter();
             });
@@ -92,8 +92,8 @@ public class TestExportController {
 
     @PostMapping("/query/exportExcelBySingleExcoterZIP")
     public void exportExcelBySingleExcoterZIP() {
-        boolean ceshi = sedissonManage.tryLock("ceshi", TimeUnit.SECONDS, 50, 5);
-        if(ceshi){
+        RLock lock = redissonClient.getLock("ceshi");
+        if(lock.tryLock()){
             CompletableFuture.runAsync(()->{
                 testExportService.exportExcelBySingleExcoterZIP();
             });

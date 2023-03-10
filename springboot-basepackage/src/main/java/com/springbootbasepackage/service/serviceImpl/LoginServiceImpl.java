@@ -9,6 +9,8 @@ import com.springbootbasepackage.service.LoginService;
 import com.springbootbasepackage.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -30,6 +32,10 @@ public class LoginServiceImpl implements LoginService {
     private UserService userService;
 
 
+    @Resource
+    private RedissonClient redissonClient;
+
+
     @Override
     public String sendIphone(LoginIphoneDTO loginIphoneDTO) {
         Random randObj = new Random();
@@ -42,46 +48,51 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public LoginIphoneAndYzmDTO login(LoginIphoneAndYzmDTO loginIphoneAndYzmDTO) {
-        UserDTO user = new UserDTO();
-        user.setIphone(loginIphoneAndYzmDTO.getIphone());
-        if(StringUtils.isNotBlank(loginIphoneAndYzmDTO.getYzm())){
-            //校验验证码
-            String yzm = (String) redisTemplate.opsForValue().get(loginIphoneAndYzmDTO.getIphone()+"yzm");
-            if(!loginIphoneAndYzmDTO.getYzm().equals(yzm)){
-                throw new SntException("验证码不正确");
-            }
+        RLock lock = redissonClient.getLock("login:"+loginIphoneAndYzmDTO.getIphone());
+        if(!lock.tryLock()){
+            throw new SntException("请稍后重试");
         }
-
-        List<UserDTO> users = userService.queryByUser(user);
-        if(CollUtil.isEmpty(users)){
-            return loginIphoneAndYzmDTO;
-        }else{
-            if(loginIphoneAndYzmDTO.getIphone() != null && loginIphoneAndYzmDTO.getYzm() != null) {
-                //生成token
-                //String token = TokenUtil.sign(loginIphoneAndYzmDTO.getIphone(), loginIphoneAndYzmDTO.getYzm());
-                UUID uuid= UUID.randomUUID();
-                String token = uuid.toString();
-                loginIphoneAndYzmDTO.setToken(token);
-                log.info("token:{}",token);
-                //断言token不为空，并以用户名作为key，存入redis
-                Assert.notNull(token,"登录失败了，口令生成失败");
-                String getToken = (String) redisTemplate.opsForValue().get("shoujihao:"+loginIphoneAndYzmDTO.getIphone());
-                if(StringUtils.isNotBlank(getToken)){
-                    //单点登录 ，删除原来的 token
-                    redisTemplate.delete(getToken);
+        try{
+            UserDTO user = new UserDTO();
+            user.setIphone(loginIphoneAndYzmDTO.getIphone());
+            if(StringUtils.isNotBlank(loginIphoneAndYzmDTO.getYzm())){
+                //校验验证码
+                String yzm = (String) redisTemplate.opsForValue().get(loginIphoneAndYzmDTO.getIphone()+"yzm");
+                if(!loginIphoneAndYzmDTO.getYzm().equals(yzm)){
+                    throw new SntException("验证码不正确");
                 }
-                redisTemplate.opsForValue().set("shoujihao:"+loginIphoneAndYzmDTO.getIphone(),token,30L, TimeUnit.MINUTES);
-                redisTemplate.opsForValue().set(token,loginIphoneAndYzmDTO,30L, TimeUnit.MINUTES);
+            }
+
+            List<UserDTO> users = userService.queryByUser(user);
+            if(CollUtil.isEmpty(users)){
                 return loginIphoneAndYzmDTO;
             }else{
-                return loginIphoneAndYzmDTO;
+                if(loginIphoneAndYzmDTO.getIphone() != null && loginIphoneAndYzmDTO.getYzm() != null) {
+                    //生成token
+                    //String token = TokenUtil.sign(loginIphoneAndYzmDTO.getIphone(), loginIphoneAndYzmDTO.getYzm());
+                    UUID uuid= UUID.randomUUID();
+                    String token = uuid.toString();
+                    loginIphoneAndYzmDTO.setToken(token);
+                    log.info("token:{}",token);
+                    //断言token不为空，并以用户名作为key，存入redis
+                    Assert.notNull(token,"登录失败了，口令生成失败");
+                    String getToken = (String) redisTemplate.opsForValue().get("shoujihao:"+loginIphoneAndYzmDTO.getIphone());
+                    if(StringUtils.isNotBlank(getToken)){
+                        //单点登录 ，删除原来的 token
+                        redisTemplate.delete(getToken);
+                    }
+                    redisTemplate.opsForValue().set("shoujihao:"+loginIphoneAndYzmDTO.getIphone(),token,30L, TimeUnit.MINUTES);
+                    redisTemplate.opsForValue().set(token,loginIphoneAndYzmDTO,30L, TimeUnit.MINUTES);
+                    return loginIphoneAndYzmDTO;
+                }else{
+                    return loginIphoneAndYzmDTO;
+                }
             }
+
+        }finally {
+            lock.unlock();
         }
     }
-
-
-
-
 
 
 }
