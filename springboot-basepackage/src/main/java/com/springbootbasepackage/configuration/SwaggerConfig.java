@@ -21,6 +21,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .select()
                 //RequestHandlerSelectors,配置要扫描接口的方式，basePackage说明扫描包
                 .apis(RequestHandlerSelectors.basePackage("com.springbootbasepackage.controller"))
+                //.apis(RequestHandlerSelectors.any())
                 .build();
     }
     //配置Swagger 信息 --》 apiInfo
