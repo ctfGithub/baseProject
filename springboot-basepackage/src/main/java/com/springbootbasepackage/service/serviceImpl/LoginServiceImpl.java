@@ -1,6 +1,7 @@
 package com.springbootbasepackage.service.serviceImpl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.json.JSONUtil;
 import com.springbootbasepackage.base.SntException;
 import com.springbootbasepackage.dto.LoginIphoneAndYzmDTO;
 import com.springbootbasepackage.dto.LoginIphoneDTO;
@@ -40,8 +41,8 @@ public class LoginServiceImpl implements LoginService {
     public String sendIphone(LoginIphoneDTO loginIphoneDTO) {
         Random randObj = new Random();
         String yzm = Integer.toString(100000 + randObj.nextInt(900000));
-        //验证码  放在Redis 中
-        redisTemplate.opsForValue().set(loginIphoneDTO.getIphone()+"yzm",yzm);
+        //验证码  放在Redis 中 ,验证码时间 1 min
+        redisTemplate.opsForValue().set(loginIphoneDTO.getIphone()+"yzm",yzm,2L, TimeUnit.MINUTES);
         return yzm;
     }
 
@@ -82,7 +83,7 @@ public class LoginServiceImpl implements LoginService {
                         redisTemplate.delete(getToken);
                     }
                     redisTemplate.opsForValue().set("shoujihao:"+loginIphoneAndYzmDTO.getIphone(),token,30L, TimeUnit.MINUTES);
-                    redisTemplate.opsForValue().set(token,loginIphoneAndYzmDTO,30L, TimeUnit.MINUTES);
+                    redisTemplate.opsForValue().set(token, JSONUtil.toJsonStr(loginIphoneAndYzmDTO),30L, TimeUnit.MINUTES);
                     return loginIphoneAndYzmDTO;
                 }else{
                     return loginIphoneAndYzmDTO;

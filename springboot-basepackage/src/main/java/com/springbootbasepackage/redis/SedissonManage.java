@@ -23,7 +23,7 @@ public class SedissonManage {
     @Resource
     private RedissonClient redissonClient;
 
-    private String PREFIX = "RDS_LOCK:BASE" + System.getenv("project.name") + ":";
+    private String PREFIX = "RDS_LOCK:" + System.getenv("basePackage") + ":";
 
     /**
      * 锁 不带超时时间 慎用

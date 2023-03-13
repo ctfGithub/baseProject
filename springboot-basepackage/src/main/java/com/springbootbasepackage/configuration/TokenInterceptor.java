@@ -56,6 +56,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(500);
+            response.sendRedirect("/loginController/login/account");
             return false;
         }
         return false;
