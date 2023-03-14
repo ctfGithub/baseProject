@@ -2,6 +2,7 @@ package com.springbootbasepackage.service.serviceImpl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springbootbasepackage.base.SntException;
 import com.springbootbasepackage.dto.LoginIphoneAndYzmDTO;
 import com.springbootbasepackage.dto.LoginIphoneDTO;
@@ -9,6 +10,7 @@ import com.springbootbasepackage.dto.UserDTO;
 import com.springbootbasepackage.redis.SedissonManage;
 import com.springbootbasepackage.service.LoginService;
 import com.springbootbasepackage.service.UserService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
@@ -32,6 +34,8 @@ public class LoginServiceImpl implements LoginService {
     @Resource
     private UserService userService;
 
+    @Resource
+    private ObjectMapper objectMapper;
 
     @Resource
     private SedissonManage sedissonManage;
@@ -47,6 +51,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
 
+    @SneakyThrows
     @Override
     public LoginIphoneAndYzmDTO login(LoginIphoneAndYzmDTO loginIphoneAndYzmDTO) {
         RLock lock = sedissonManage.lock("login:"+loginIphoneAndYzmDTO.getIphone());
@@ -66,7 +71,7 @@ public class LoginServiceImpl implements LoginService {
 
             List<UserDTO> users = userService.queryByUser(user);
             if(CollUtil.isEmpty(users)){
-                return loginIphoneAndYzmDTO;
+                throw new SntException("查询不到用户信息");
             }else{
                 if(loginIphoneAndYzmDTO.getIphone() != null && loginIphoneAndYzmDTO.getYzm() != null) {
                     //生成token
@@ -84,6 +89,8 @@ public class LoginServiceImpl implements LoginService {
                     }
                     redisTemplate.opsForValue().set("shoujihao:"+loginIphoneAndYzmDTO.getIphone(),token,30L, TimeUnit.MINUTES);
                     redisTemplate.opsForValue().set(token, JSONUtil.toJsonStr(loginIphoneAndYzmDTO),30L, TimeUnit.MINUTES);
+                    redisTemplate.opsForValue().set(token, objectMapper.writeValueAsString(loginIphoneAndYzmDTO),30L, TimeUnit.MINUTES);
+
                     return loginIphoneAndYzmDTO;
                 }else{
                     return loginIphoneAndYzmDTO;
