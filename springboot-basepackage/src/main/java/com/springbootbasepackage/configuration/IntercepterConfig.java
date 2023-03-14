@@ -25,7 +25,7 @@ public class IntercepterConfig implements WebMvcConfigurer {
     }
     @Override
     public void addInterceptors(InterceptorRegistry registry){
-        //登录
+        //登录 -白名单
         List<String> paths = Arrays.asList("/loginController/login/account", "/loginController/sendIphone",
                 "/swagger-ui.html","/null/**","/swagger-resources/**","/swagger/**","/webjars/**");
         List<String> excludePath = new ArrayList<>(paths);
