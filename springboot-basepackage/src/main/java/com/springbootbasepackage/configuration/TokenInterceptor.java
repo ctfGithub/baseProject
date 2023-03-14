@@ -35,12 +35,14 @@ public class TokenInterceptor implements HandlerInterceptor {
         String token = request.getHeader("token");
         if (token != null) {
             //验证token
-            LoginIphoneAndYzmDTO dto = (LoginIphoneAndYzmDTO) redisTemplate.opsForValue().get(token);
+            String str = (String) redisTemplate.opsForValue().get(token);
+            LoginIphoneAndYzmDTO dto =JSONObject.parseObject(str,LoginIphoneAndYzmDTO.class);
+
             //boolean result = TokenUtil.verify(token);
             if (Objects.nonNull(dto)) {
                 log.info("通过拦截器");
                 //重新续期 30分钟
-                redisTemplate.opsForValue().set(token,dto,30L, TimeUnit.MINUTES);
+                redisTemplate.opsForValue().set(token, JSONObject.toJSONString(dto),30L, TimeUnit.MINUTES);
                 return true;
             }
         }

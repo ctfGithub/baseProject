@@ -1,6 +1,7 @@
 package com.springbootbasepackage.service.serviceImpl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springbootbasepackage.base.SntException;
 import com.springbootbasepackage.dto.LoginIphoneAndYzmDTO;
@@ -87,7 +88,7 @@ public class LoginServiceImpl implements LoginService {
                         redisTemplate.delete(getToken);
                     }
                     redisTemplate.opsForValue().set("shoujihao:"+loginIphoneAndYzmDTO.getIphone(),token,30L, TimeUnit.MINUTES);
-                    redisTemplate.opsForValue().set(token, loginIphoneAndYzmDTO,30L, TimeUnit.MINUTES);
+                    redisTemplate.opsForValue().set(token, JSONObject.toJSONString(loginIphoneAndYzmDTO),30L, TimeUnit.MINUTES);
                     //redisTemplate.opsForValue().set(token, objectMapper.writeValueAsString(loginIphoneAndYzmDTO),30L, TimeUnit.MINUTES);
 
                     return loginIphoneAndYzmDTO;
