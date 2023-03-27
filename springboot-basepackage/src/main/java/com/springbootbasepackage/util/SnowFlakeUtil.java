@@ -170,11 +170,12 @@ public class SnowFlakeUtil {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10; i++) {
             new Thread(
                     ()-> log.info("生成的id：{}", snowFlakeUtil.nextId())
             ).start();
         }
+
 
         //SnowFlakeUtil snowFlakeUtil = new SnowFlakeUtil();
         //long id = snowFlakeUtil.nextId();
