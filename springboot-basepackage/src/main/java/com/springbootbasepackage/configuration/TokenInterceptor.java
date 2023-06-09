@@ -23,11 +23,15 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         if ("OPTIONS".equals(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             return true;
         }
-
         response.setCharacterEncoding("utf-8");
         String requestURI = request.getRequestURI();
         log.info("url:{}",requestURI);
@@ -48,6 +52,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
+
         PrintWriter out = null;
         try {
             JSONObject json = new JSONObject();
