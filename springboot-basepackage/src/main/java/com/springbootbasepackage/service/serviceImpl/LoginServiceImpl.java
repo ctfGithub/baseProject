@@ -14,6 +14,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -34,7 +35,7 @@ public class LoginServiceImpl implements LoginService {
     @Resource
     private UserService userService;
 
-    @Resource
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Resource
