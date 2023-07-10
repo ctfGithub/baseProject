@@ -5,6 +5,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springbootbasepackage.base.ExcelBodyApply;
 import com.springbootbasepackage.base.ExcelListener;
 import com.springbootbasepackage.base.SntException;
@@ -50,6 +51,11 @@ public class PartnerSourceServiceImpl implements PartnerSourceService {
 
     @Resource
     private RedisTemplate redisTemplate;
+
+
+    @Resource
+    private ObjectMapper objectMapper;
+
 
     @Override
     public List<PartnerSourceDTO> testPartnerSource() {
