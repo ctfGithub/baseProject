@@ -1,4 +1,4 @@
-package com.abi.bees.promotion.dto.activityReq;
+package com.springbootbasepackage.query;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
