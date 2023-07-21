@@ -437,11 +437,41 @@ public class DateUtil {
 
     }
 
+    /**
+     * 一周的第一天和最后一天的日期 （星期一是第一天，日 是最后一天）
+     */
+    public void dateInfo(){
+        // 获取当前日期
+        Date currentDate = new Date();
+
+        // 创建一个Calendar实例，并设置当前日期
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+
+        // 设置一周的第一天为星期一
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+
+        // 获取本周的第一天
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        Date firstDayOfWeek = calendar.getTime();
+
+        // 获取本周的最后一天
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek() + 6);
+        Date lastDayOfWeek = calendar.getTime();
+
+        // 输出结果
+        System.out.println("本周的第一天：" + firstDayOfWeek);
+        System.out.println("本周的最后一天：" + lastDayOfWeek);
+    }
+
+
     public static void main(String[] args) {
         int i = DateUtil.timeClock();
         System.out.println(i);
 
     }
+
+
 
 
 }
