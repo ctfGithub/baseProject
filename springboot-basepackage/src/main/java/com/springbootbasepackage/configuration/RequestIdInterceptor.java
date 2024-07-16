@@ -34,12 +34,5 @@ public class RequestIdInterceptor implements RequestInterceptor {
         template.header(TRACE_ID_HEADER, requestId);
     }
 
-    public static void setRequestID(String id) {
-        requestId.set(id);
-    }
-
-    public static String getRequestID() {
-        return requestId.get();
-    }
 
 }
