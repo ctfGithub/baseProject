@@ -1,0 +1,19 @@
+
+spring:
+  profiles:
+    active: local
+  application:
+    name: basePackage
+
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: nacos
+        data-id: ${spring.application.name}
+        group: DEFAULT_GROUP
+        file-extension: yaml  # 必须写 yaml
+        refresh-enabled: true  # 开启刷新
+        auto-refresh: true       # 自动刷新
+

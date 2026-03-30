@@ -19,6 +19,22 @@ server:
       - text/css
     min-response-size: 2048
 
+xxl:
+  job:
+    admin:
+      # XXL-Job 后台地址（你自己的）
+      addresses: http://127.0.0.1:8080/xxl-job-admin
+    executor:
+      # 随便起，唯一就行
+      appname: ${spring.application.name}
+      # 本地日志路径
+      logpath: ./logs/xxl-job
+    # 执行器通讯令牌（默认就是这个，不用改）
+    accessToken: default_token
+
+
+
+
 spring:
   datasource:
     ufc:
