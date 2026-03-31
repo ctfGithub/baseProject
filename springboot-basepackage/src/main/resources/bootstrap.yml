@@ -6,7 +6,15 @@ spring:
     name: basePackage
 
   cloud:
+    loadbalancer:
+      enabled: true
+      ribbon:
+        enabled: false  # 关闭旧的ribbon，用最新loadbalancer
     nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: nacos
       config:
         server-addr: 127.0.0.1:8848
         username: nacos
