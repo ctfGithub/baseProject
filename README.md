@@ -33,7 +33,8 @@ yml添加配置项
 
 
 
-
+全链路日志追踪   (sleuth,zipkin)
+引入sleuth，zipkin依赖，修改配置文件
 下载zipkin 控制台
 https://repo1.maven.org/maven2/io/zipkin/zipkin-server/2.23.19/zipkin-server-2.23.19-exec.jar
 
