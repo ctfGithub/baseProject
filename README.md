@@ -30,6 +30,8 @@ cd  /Users/caotengfei/Downloads/nacos/bin   （sh startup.sh -m standalone）
 https://github.com/alibaba/Sentinel/releases/download/1.8.6/sentinel-dashboard-1.8.6.jar
 pom.xml引入依赖
 yml添加配置项
+示例：
+Java -jar /Users/caotengfei/Downloads/sentinel-dashboard-1.8.6.jar
 
 
 
