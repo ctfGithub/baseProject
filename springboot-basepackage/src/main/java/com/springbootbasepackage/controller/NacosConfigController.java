@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RefreshScope
 public class NacosConfigController {
 
-    @Value("${app.name}")
+    @Value("${app.name:defaultApp}")
     private String appName;
 
-    @Value("${app.version}")
+    @Value("${app.version:1.0.0}")
     private String appVersion;
 
 

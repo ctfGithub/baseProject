@@ -6,7 +6,7 @@ logging:
 
 
 server:
-  port: 8099
+  port: 8100
   compression:
     enabled: true
     mime-types:
@@ -23,7 +23,7 @@ xxl:
   job:
     admin:
       # XXL-Job 后台地址（你自己的）
-      addresses: http://127.0.0.1:8080/xxl-job-admin
+      addresses: http://127.0.0.1:8101/xxl-job-admin
     executor:
       # 随便起，唯一就行
       appname: ${spring.application.name}
@@ -36,6 +36,22 @@ xxl:
 
 
 spring:
+  application:
+    # 1. 必须配置服务名！控制台左侧会显示这个名字
+    name: springboot-base
+  cloud:
+    sentinel:
+      transport:
+        # 2. 指向你的 Sentinel 控制台地址（本机就是 127.0.0.1:8080）
+        dashboard: 127.0.0.1:8080
+        # 3. 客户端通信端口（默认 8719，不冲突就不用改）
+        port: 8719
+      # 4. 开启 Web 适配，让 HTTP 请求被 Sentinel 拦截
+      filter:
+        enabled: true
+        url-pattern: /*
+      # 可选：启动时就连接控制台，避免延迟
+      eager: true
   datasource:
     ufc:
       driver-class-name: com.mysql.cj.jdbc.Driver
