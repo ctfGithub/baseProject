@@ -31,6 +31,9 @@ https://github.com/alibaba/Sentinel/releases/download/1.8.6/sentinel-dashboard-1
 pom.xml引入依赖
 yml添加配置项
 
+
+
+
 下载zipkin 控制台
 https://repo1.maven.org/maven2/io/zipkin/zipkin-server/2.23.19/zipkin-server-2.23.19-exec.jar
 
