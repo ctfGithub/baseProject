@@ -2,9 +2,6 @@
 spring:
   profiles:
     active: local
-  application:
-    name: basePackage
-
   cloud:
     loadbalancer:
       enabled: true
