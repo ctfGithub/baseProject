@@ -38,7 +38,7 @@ xxl:
 spring:
   application:
     # 1. 必须配置服务名！控制台左侧会显示这个名字
-    name: springboot-base
+    name: basePackage
   cloud:
     sentinel:
       transport:
