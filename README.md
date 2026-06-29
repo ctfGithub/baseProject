@@ -42,5 +42,17 @@ https://repo1.maven.org/maven2/io/zipkin/zipkin-server/2.23.19/zipkin-server-2.2
 
 
 
+//查询数据库的表-不显示部分数据库
+SELECT SCHEMA_NAME AS `Database`
+FROM information_schema.SCHEMATA
+WHERE SCHEMA_NAME NOT IN ('information_schema','mysql','performance_schema','sys');
+
+sql预执行
+com.springbootbasepackage.controller.SqlAffectedRowsController.check
+
+
+
+
+
 
 
