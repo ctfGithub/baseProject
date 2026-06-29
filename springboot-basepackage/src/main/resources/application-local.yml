@@ -13,6 +13,7 @@ server:
       - application-json
       - application/xml
       - application/javascript
+      - text/css
       - text/html
       - text/xml
       - text/plain
@@ -33,8 +34,6 @@ xxl:
     accessToken: default_token
 
 
-
-
 spring:
   application:
     # 1. 必须配置服务名！控制台左侧会显示这个名字
@@ -52,14 +51,13 @@ spring:
         url-pattern: /*
       # 可选：启动时就连接控制台，避免延迟
       eager: true
+  # ========== MyBatis-Plus 标准数据源配置 ==========
   datasource:
-    ufc:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/dj_second_phase?serverTimezone=UTC&characterEncoding=utf-8
-      username: root
-      password: 123456
-    filters:
-      stat,wall
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dj_second_phase?serverTimezone=UTC&characterEncoding=utf-8
+    username: root
+    password: 123456
   redis:
     database: 1
     host: localhost
@@ -72,8 +70,10 @@ spring:
         min-idle: 0
     timeout: 1000
 
-
-
-
-
-
+# ========== MyBatis-Plus 配置 ==========
+mybatis-plus:
+  mapper-locations: classpath*:mybatis/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-prefix: dao.

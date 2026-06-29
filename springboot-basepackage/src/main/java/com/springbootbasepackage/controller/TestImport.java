@@ -4,10 +4,9 @@ import com.springbootbasepackage.base.SntResult;
 import com.springbootbasepackage.dto.ActivityImportWholesaleDto;
 import com.springbootbasepackage.exception.BusinessException;
 import com.springbootbasepackage.service.PartnerSourceService;
-import io.shardingsphere.transaction.annotation.ShardingTransactionType;
-import io.shardingsphere.transaction.api.TransactionType;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +24,7 @@ public class TestImport {
     private PartnerSourceService partnerSourceService;
 
     @PostMapping("/importExcel")
-    @ShardingTransactionType(TransactionType.XA)
+    @Transactional
     public SntResult<Integer> importExcel(@RequestParam("file") MultipartFile file, Integer channelType) {
         //校验文件必填
         //
