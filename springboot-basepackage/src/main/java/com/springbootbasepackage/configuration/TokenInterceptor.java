@@ -46,7 +46,7 @@ public class TokenInterceptor implements HandlerInterceptor {
             if (Objects.nonNull(dto)) {
                 log.info("通过拦截器");
                 //重新续期 30分钟
-                redisTemplate.opsForValue().set(token, JSONObject.toJSONString(dto),30L, TimeUnit.MINUTES);
+                redisTemplate.opsForValue().set(token, JSONObject.toJSONString(dto),30000L, TimeUnit.MINUTES);
                 return true;
             }
         }
